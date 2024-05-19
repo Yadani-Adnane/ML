@@ -1,24 +1,13 @@
+import joblib
 import streamlit as st
-
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC
+import joblib
 
-df=pd.read_csv("Breast Cancer Wisconsin (Diagnostic) Data.csv")
-df.drop(columns=['Unnamed: 32'],inplace=True)
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+def load_model():
+    model = joblib.load('svm_mnist_model.pkl')
+    return model
 
-le = LabelEncoder()
-df['diagnosis'] = le.fit_transform(df['diagnosis'])
-df = df.drop('id', axis=1)
-X = df.drop(columns='diagnosis',axis=1)
-y = df['diagnosis']
-X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=42)
-s = StandardScaler()
-X_train = s.fit_transform(X_train)
-X_test = s.fit_transform(X_test)
-svm=SVC()
-svm.fit(X_train,y_train)
+model = load_model()
 
 st.write('''
 # Classification du Diagnostic du Cancer du Sein à l'Aide de Modèles de Machine Learning
@@ -70,7 +59,7 @@ if len(values)==30:
 if st.sidebar.button('Envoyer'):
     if input_data != '':
         df2 = pd.DataFrame(data1, index=[0])
-        svm_pred= svm.predict(df2)
+        svm_pred= model.predict(df2)
         st.subheader('Données de patient:')
         st.write(df2)
         if svm_pred == 1:
@@ -146,7 +135,7 @@ def user_input():
     return personne
 df2=user_input()
 if st.sidebar.button("Envoyer les données"):
-    svm_pred= svm.predict(df2)
+    svm_pred= model.predict(df2)
     st.subheader('Données de patient:')
     st.write(df2)
     if svm_pred == 1:
