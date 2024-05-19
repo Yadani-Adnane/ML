@@ -145,5 +145,9 @@ def user_input():
     return personne
 df2=user_input()
 if st.sidebar.button("Envoyer les données"):
+    svm_pred= svm.predict(df2)
     st.subheader('Données de patient:')
     st.write(df2)
+    if svm_pred == 1:
+        st.subheader("Le patient est Maligne.")
+    else: st.subheader("Le patient est Bénigne,")
